@@ -1,0 +1,187 @@
+#
+# wm independent hotkeys
+#
+
+# terminal emulator
+super + Return
+	kitty
+
+# program launcher
+super + r
+	dmenu_run -nb "#2E3440" -nf "#D8DEE9" -sb "#434C5E" -fn 'Hack Nerd Font-14.0' -i -p " run >>>"
+
+super + v
+	clipmenu -nb "#2E3440" -nf "#D8DEE9" -sb "#434C5E" -fn 'Hack Nerd Font-14.0' -i -p " paste >>>"
+
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -x sxhkd
+
+#
+# bspwm hotkeys
+#
+
+# quit/restart bspwm
+super + alt + {q,r}
+	bspc {quit,wm -r}
+
+# close and kill
+super + {_,shift + }w
+	bspc node -{c,k}
+
+# alternate between the tiled and monocle layout
+super + m
+	bspc desktop -l next
+
+# send the newest marked node to the newest preselected node
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+#
+# state/flags
+#
+
+# set the window state
+super + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+# set the node flags
+super + ctrl + {m,x,y,z}
+	bspc node -g {marked,locked,sticky,private}
+
+#
+# focus/swap
+#
+
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# focus the next/previous window in the current desktop
+super + {_,shift + }c
+	bspc node -f {next,prev}.local.!hidden.window
+
+# focus the last node/desktop
+super + {grave,Tab}
+	bspc {node,desktop} -f last
+
+# focus the older or newer node in the focus history
+super + {o,i}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+# focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+#
+# preselect
+#
+
+# preselect the direction
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+# cancel the preselection for the focused desktop
+super + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#
+# function keys
+#
+XF86MonBrightnessUp
+        xbacklight -inc 5 -fps 60
+	#;notify-send -h int:value:$(xbacklight -get) "Brightness"
+
+XF86MonBrightnessDown
+        xbacklight -dec 5 -fps 60
+	#;notify-send -h int:value:$(xbacklight -get) "Brightness"
+
+XF86AudioMute
+        pamixer -t;
+
+XF86AudioLowerVolume
+        pamixer -d 5
+	#; notify-send -h int:value:$(pamixer --get-volume) "Volume"
+
+XF86AudioRaiseVolume
+        pamixer -i 5
+	#; notify-send -h int:value:$(pamixer --get-volume) "Volume"
+
+XF86AudioPlay
+        playerctl play-pause
+
+XF86AudioPause
+	playerctl play-pause
+
+XF86AudioPrev
+        playerctl previous
+
+XF86AudioNext
+        playerctl next
+
+Print
+	p=~/Pictures/screenshots/$(date +%H%M%S_%d%m%y).png;maim -u -o -s $p; dragon-drag-and-drop -x $p
+
+super + Print
+	p=~/Pictures/screenshots/$(date +%H%M%S_%d%m%y).png;maim -u -o -s $p; dragon-drag-and-drop -x $p
+
+# shortcuts keybindings
+
+super + a
+	exec ~/Dev/scripts/bp.sh
+
+super + x
+	systemctl $(echo -e "suspend\nhibernate\npoweroff\nreboot" | dmenu)
+
+super + q
+	exec dctl
+
+super + z
+    polybar-msg cmd hide && bspc config top_padding 0 && bspc config bottom_padding 0
+
+super + shift + z
+    polybar-msg cmd show
+
+super + e
+	bspc node focused -g hidden=on
+
+super + shift + e
+	bspc node $(bspc query -N -d $(bspc query -D -d focused --names) -n .hidden | tail -n1) -g hidden=off
+
+super + alt + v
+	vivaldi-stable
+	#vivaldi-stable --use-gl=desktop --enable-features=VaapiVideoDecoder
+
+super + shift + d
+	tdrop -ma -w 40% -h 94% -x 2% -y 3% -n 1 kitty
+
+super + alt + d
+	tdrop -ma -w 40% -h 94% -x 58% -y 3% -n 1 kitty
+
+super + d
+	tdrop -ma -w 90% -h 80% -x 5% -y 10% -n 1 kitty
+
+
+super + shift + n
+	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://notion.so"
+
+super + shift + s
+	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://sketch.io/sketchpad/"
+
+super + shift + y
+	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://youtube.com"
+
+super + shift + m
+	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://music.youtube.com"
+
+
