@@ -4,18 +4,18 @@
 
 # terminal emulator
 super + Return
-	kitty
+	alacritty
 
 # program launcher
-super + r
-	dmenu_run -nb "#2E3440" -nf "#D8DEE9" -sb "#434C5E" -fn 'Hack Nerd Font-14.0' -i -p " run >>>"
+# super + r
+# 	dmenu_run -nb "#2E3440" -nf "#D8DEE9" -sb "#434C5E" -fn 'Hack Nerd Font-14.0' -i -p " run >>>"
 
-super + v
-	clipmenu -nb "#2E3440" -nf "#D8DEE9" -sb "#434C5E" -fn 'Hack Nerd Font-14.0' -i -p " paste >>>"
+# super + v
+# 	clipmenu -nb "#2E3440" -nf "#D8DEE9" -sb "#434C5E" -fn 'Hack Nerd Font-14.0' -i -p " paste >>>"
 
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -USR1 -x sxhkd
+	pkill -USR1 -x sxhkd && notify-send "sxhkd restart"
 
 #
 # bspwm hotkeys
@@ -42,9 +42,10 @@ super + y
 #
 
 # set the window state
-super + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
-
+# super + {t,shift + t,s,f}
+#	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+super + {t,s,f}
+	bspc node -t {tiled,floating,fullscreen}
 # set the node flags
 super + ctrl + {m,x,y,z}
 	bspc node -g {marked,locked,sticky,private}
@@ -74,6 +75,10 @@ super + {o,i}
 # focus or send to the given desktop
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
+
+# rotate 90deg
+super + {_, shift + }q
+	bspc node @/ -R -90
 
 #
 # preselect
@@ -117,6 +122,12 @@ XF86AudioRaiseVolume
         pamixer -i 5
 	#; notify-send -h int:value:$(pamixer --get-volume) "Volume"
 
+alt + button5
+	pamixer -d 5
+
+alt + button4 
+	pamixer -i 5
+
 XF86AudioPlay
         playerctl play-pause
 
@@ -130,11 +141,10 @@ XF86AudioNext
         playerctl next
 
 Print
-	p=~/Pictures/screenshots/$(date +%H%M%S_%d%m%y).png;maim -u -o -s $p; dragon-drag-and-drop -x $p
+	p=~/Pictures/screenshots/$(date +%H%M%S_%d%m%y).png;maim -u -o -s $p; dragon-drop -x $p
 
 super + Print
-	p=~/Pictures/screenshots/$(date +%H%M%S_%d%m%y).png;maim -u -o -s $p; dragon-drag-and-drop -x $p
-
+  maim -u -o -s /tmp/ocr.png; tesseract /tmp/ocr.png /tmp/ocr; cat /tmp/ocr.txt | xclip -selection clipboard
 # shortcuts keybindings
 
 super + a
@@ -146,11 +156,14 @@ super + x
 super + q
 	exec dctl
 
-super + z
-    polybar-msg cmd hide && bspc config top_padding 0 && bspc config bottom_padding 0
+# super + g
+#   xtitle $(bspc query -N -n .window)
 
-super + shift + z
-    polybar-msg cmd show
+#super + z
+#    polybar-msg cmd hide && bspc config top_padding 0 && bspc config bottom_padding 0
+
+#super + shift + z
+#    polybar-msg cmd show
 
 super + e
 	bspc node focused -g hidden=on
@@ -158,30 +171,68 @@ super + e
 super + shift + e
 	bspc node $(bspc query -N -d $(bspc query -D -d focused --names) -n .hidden | tail -n1) -g hidden=off
 
-super + alt + v
-	vivaldi-stable
+super + shift + v
+	vivaldi-stable --ignore-gpu-blocklist --disable-features=UseOzonePlatform --enable-features=VaapiVideoDecoder --use-gl=desktop --enable-gpu-rasterization --enable-zero-copy
 	#vivaldi-stable --use-gl=desktop --enable-features=VaapiVideoDecoder
 
-super + shift + d
-	tdrop -ma -w 40% -h 94% -x 2% -y 3% -n 1 kitty
+super + {_,shift +,alt +}d
+	tdrop -ma -w {90% -h 80% -x 5% -y 10%,40% -h 90% -x 4% -y 3%,40% -h 90% -x 54% -y 3%} -n 1 kitty
 
-super + alt + d
-	tdrop -ma -w 40% -h 94% -x 58% -y 3% -n 1 kitty
-
-super + d
-	tdrop -ma -w 90% -h 80% -x 5% -y 10% -n 1 kitty
-
-
+super + shift + p 
+	discord --ignore-gpu-blocklist --disable-features=UseOzonePlatform --enable-features=VaapiVideoDecoder --use-gl=desktop --enable-gpu-rasterization --enable-zero-copy
+	
+super + shift + y
+	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://youtube.com" --ignore-gpu-blocklist --disable-features=UseOzonePlatform --enable-features=VaapiVideoDecoder --use-gl=desktop --enable-gpu-rasterization --enable-zero-copy
+	
 super + shift + n
 	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://notion.so"
 
 super + shift + s
 	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://sketch.io/sketchpad/"
 
-super + shift + y
-	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://youtube.com"
+super + shift + b
+  vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://calendar.google.com/"
+
+
+# super + shift + m
+# 	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://music.youtube.com"
 
 super + shift + m
-	vivaldi-stable --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app="https://music.youtube.com"
+  youtube-music
 
+super + shift + t
+	tdrop -ma -w 25% -h 60% -x 70% -y 15% -n telegram telegram-desktop
 
+# term-menu ##########################
+
+# program launcher
+super + space
+    term-menu fapps
+
+# program killer
+super + shift + space
+    term-menu psk
+
+# clipmenu
+alt + v
+  term-menu clippy
+
+# clipmenu
+super + v
+  term-menu clip-view
+
+# keybindhelper
+super + shift + h
+   term-menu keybinds
+
+# dotfiles rofi menu ; open in neovide
+# super + shift + p
+#     term-menu fdots
+
+# dictionary
+super + ctrl + d
+  term-menu fdic
+
+# power-menu 
+super + p
+  term-menu powermenu

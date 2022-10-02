@@ -1,8 +1,5 @@
-env:
-  TERM: xterm-256color
-
 window:
-  opacity: 0
+  opacity: 100
   padding:
     x: 10
     y: 10
@@ -56,8 +53,8 @@ key_bindings:
 colors:
   # Default colors
   primary:
-    background: "#2E3440"
-    foreground: "#D8DEE9"
+    background: "#202638"
+    foreground: "#cbd2df"
 
   # Normal colors
   normal:

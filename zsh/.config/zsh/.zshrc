@@ -7,11 +7,11 @@ bindkey -e
 setopt hist_ignore_space
 setopt hist_ignore_all_dups
 
-eval "$(starship init zsh)"
-eval "$(zoxide init zsh)"
-
 autoload compinit && compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
 
 alias x="sudo powertop --auto-tune; startx"
 alias bt="~/Dev/scripts/bluetooth.sh"
@@ -21,7 +21,8 @@ alias resolve="prime-run /opt/resolve/bin/resolve >/dev/null 2>&1 & disown"
 alias sprunge="curl -fsLF 'sprunge=<-' http://sprunge.us"
 alias docker="sudo docker"
 alias docker-compose="sudo docker-compose"
-alias leet="vivaldi-stable --no-sandbox --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app='https://leetcode.com/problemset/all/' >/dev/null 2>&1 & disown && cd ~/Dev/leetcode/ && code ."
+alias leet="vivaldi-stable --no-sandbox --disable-background-networking --disable-background-timer-throttling --disable-backing-store-limit --disable-breakpad --app='https://leetcode.com/problemset/all/' >/dev/null 2>&1 & disown && cd ~/leetcode && code ."
+alias cd="z"
 
 function ccpp(){
 	g++ -o $1 $1.cpp && ./$1
@@ -63,6 +64,16 @@ function fe() {
 	[[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
 
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf "$@" --preview 'tree -C -L 2 -I node_modules --dirsfirst {}' ;;
+    *)            fzf "$@" ;;
+  esac
+}
+
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/fzf/completion.zsh
@@ -81,6 +92,13 @@ bindkey "^[[H"    beginning-of-line                    # home
 bindkey "^[[3~"   delete-char		                 # delete
 bindkey '^[[A'	history-substring-search-up
 bindkey '^[[B'	history-substring-search-down
+
+# Blur {{{
+# if [[ $(ps --no-header -p $PPID -o comm) =~ '^yakuake|kitty$' ]]; then
+#         for wid in $(xdotool search --pid $PPID); do
+#             xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id $wid; done
+# fi
+# }}}
 
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
